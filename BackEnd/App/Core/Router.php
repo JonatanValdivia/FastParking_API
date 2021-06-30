@@ -8,9 +8,16 @@ class Router{
   private $controllerMethod;
 
   function __construct(){
-    $url = $this->parseUrl();
+    //Serve para liberar as origens a acessar a nossa aplicação
+    header('Access-Control-Allow-Origin: *');
+    //serve para habilitar os métodos que serão usados. Habilitamos o opticons para ser realizado o preflight. Uma requisição de confirmação
+    header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
+    //Os headers que serão usados
+    header("Access-Control-Allow-Headers: Content-Type");
+    //setamos que a resposta será enviada no formato JSON
     header("content-tyle: application/json");
     //Verificando se o controller passado na url (mais especificamente na primeira posição), existe dentro de App/Controllers/"arquivo". 
+    $url = $this->parseUrl();
     if(file_exists("../App/Controllers/" . $url[1] . ".php")){
       //Se esse arquivo realmente existir, passamos-o para a variável/atributo controller:
       $this->controller = $url[1];
@@ -30,13 +37,16 @@ class Router{
     //Pegando o método, de acordo com a requisição
     switch($this->method){
       case "GET":
+
         if(isset($url[2])){
           $this->controllerMethod = "find";
           $this->params = [$url[2]];
         }else{
           $this->controllerMethod = "index";
         }
+        
         break;
+
       case "POST":
         $this->controllerMethod = "store";
         break;
@@ -53,7 +63,7 @@ class Router{
       case "DELETE":
         $this->controllerMethod = "delete";
         if(isset($url[2]) && is_numeric($url[2])){
-          $this->params = $url[2];
+          $this->params = [$url[2]];
         }else{
           http_response_code(400);
           echo json_encode(["Erro" => "É necessário informar o id"]);
@@ -66,7 +76,7 @@ class Router{
           exit;
           break;
     }
-    $this->params = $url ? array_values($url) : [];
+    //$this->params = $url ? array_values($url) : [];
     call_user_func_array([$this->controller, $this->controllerMethod], $this->params);
   }
 

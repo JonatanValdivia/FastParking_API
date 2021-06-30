@@ -12,7 +12,3 @@
 ### http://fastparking.com.br/cadastros/id -> Para a edição de determinado cadastro. (Método: PUT, função: update())
 
 ### http://fastparking.com.br/cadastros/id -> Para a deleção de determinado cadastro. (Método: DELETE, função: delete())
-
-
-
-
