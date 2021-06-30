@@ -9,6 +9,7 @@ class Router{
 
   function __construct(){
     $url = $this->parseUrl();
+    header("content-tyle: application/json");
     //Verificando se o controller passado na url (mais especificamente na primeira posição), existe dentro de App/Controllers/"arquivo". 
     if(file_exists("../App/Controllers/" . $url[1] . ".php")){
       //Se esse arquivo realmente existir, passamos-o para a variável/atributo controller:
@@ -18,10 +19,13 @@ class Router{
     }elseif(empty($url[1])){
 
     }else{//Se não existir esse controller passado na URL, faz-se:
-      $this->controller = "erro404";
+      //$this->controller = "cadastros";
     }
     //Se o primeiro if for true, então damos um require_once, concatenado com o controller
     require_once "../App/Controllers/" . $this->controller . ".php";
+
+    $this->controller = new $this->controller;
+
     $this->method = $_SERVER["REQUEST_METHOD"];
     //Pegando o método, de acordo com a requisição
     switch($this->method){
@@ -62,13 +66,14 @@ class Router{
           exit;
           break;
     }
-
+    $this->params = $url ? array_values($url) : [];
     call_user_func_array([$this->controller, $this->controllerMethod], $this->params);
   }
 
   
   private function parseUrl(){
     //A barra no começo é o tipo de separador
-    return explode("/", $_SERVER["SERVER_NAME"], $_SERVER["REQUEST_URI"]);
+    return explode("/", $_SERVER["SERVER_NAME"] . $_SERVER["REQUEST_URI"]);
   }
+
 }
