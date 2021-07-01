@@ -24,4 +24,24 @@ class Clientes extends Controller{
       echo json_encode($erro, JSON_UNESCAPED_UNICODE);
     }
   }
+
+  public function store(){
+    $json = file_get_contents("php://input");
+    
+    $novoCliente = json_decode($json);
+     $clienteModel = $this->model("Cliente");
+     $clienteModel->nome = $novoCliente->nome;
+     $clienteModel->placa = $novoCliente->placa;
+     $clienteModel = $clienteModel->inserir();
+
+    if($clienteModel){
+      http_response_code(201);
+      echo json_encode($clienteModel);
+    }else{
+      http_response_code(500);
+      $erro = ["erro" => "Problemas ao inserir novo cliente"];
+      echo json_encode($erro);
+    }
+    
+  }
 }

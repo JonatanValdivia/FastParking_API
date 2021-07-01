@@ -3,10 +3,10 @@
 use App\Core\Model;
 
 class Cliente{
-  private $id;
-  private $nome;
-  private $placa;
-  private $dataHoraEstacionado;
+  public $id;
+  public $nome;
+  public $placa;
+  public $dataHoraEstacionado;
 
   public function listarTodos(){
     $sql = " SELECT id, nome, placa, date_format(dataHoraEstacionado, '%d/%m/%Y')as dataEstacionado,
@@ -38,6 +38,19 @@ class Cliente{
       $this->dataHoraEstacionado = $cliente->dataHoraEstacionado;
 
       return $cliente;
+    }else{
+      return false;
+    }
+  }
+
+  public function inserir(){
+    $sql = "INSERT into tblCliente (nome, placa) values (?, ?)";
+    $stmt = Model::conexaoDB()->prepare($sql);
+    $stmt->bindValue(1, $this->nome);
+    $stmt->bindValue(2, $this->placa);
+    if($stmt->execute()){
+      $this->id = Model::conexaoDB()->lastInsertId();
+      return $this;
     }else{
       return false;
     }
