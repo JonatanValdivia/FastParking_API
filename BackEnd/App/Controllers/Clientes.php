@@ -69,4 +69,22 @@ class Clientes extends Controller{
       echo json_encode($erro, JSON_UNESCAPED_UNICODE);
     }
   }
+
+  public function delete($id){
+    $clienteModel = $this->model("Cliente");
+    $clienteModel = $clienteModel->buscarPorId($id);
+    if(!$clienteModel){
+      http_response_code(404);
+      $erro = ["erro" => "Cliente não encontrado"];
+      echo json_encode($erro);  
+    }
+    if($clienteModel->deletar()){
+      http_response_code(204);
+    }else{
+      http_response_code(500);
+      $erro = ["erro" => "Problemas ao deletar cliente"];
+      echo json_encode($erro);
+    }
+    $clienteModel = $clienteModel->deletar();
+  }
 }

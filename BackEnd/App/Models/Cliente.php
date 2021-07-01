@@ -63,4 +63,11 @@ class Cliente{
     return $stmt->execute();
   }
 
+  public function deletar(){
+    $sql = "DELETE from tblCliente where id = ?";
+
+    $stmt = Model::conexaoDB()->prepare($sql);
+    $stmt->bindValue(1, $this->id);
+    return $stmt->execute();
+  }
 }
