@@ -44,12 +44,15 @@ class Router{
         }else{
           $this->controllerMethod = "index";
         }
-        
+
         break;
 
       case "POST":
+
         $this->controllerMethod = "store";
+
         break;
+        
       case "PUT":
         $this->controllerMethod = "update";
         if(isset($url[2]) && is_numeric($url[2])){

@@ -29,10 +29,10 @@ class Clientes extends Controller{
     $json = file_get_contents("php://input");
     
     $novoCliente = json_decode($json);
-     $clienteModel = $this->model("Cliente");
-     $clienteModel->nome = $novoCliente->nome;
-     $clienteModel->placa = $novoCliente->placa;
-     $clienteModel = $clienteModel->inserir();
+    $clienteModel = $this->model("Cliente");
+    $clienteModel->nome = $novoCliente->nome;
+    $clienteModel->placa = $novoCliente->placa;
+    $clienteModel = $clienteModel->inserir();
 
     if($clienteModel){
       http_response_code(201);
@@ -42,6 +42,31 @@ class Clientes extends Controller{
       $erro = ["erro" => "Problemas ao inserir novo cliente"];
       echo json_encode($erro);
     }
-    
+  }
+
+  public function update($id){
+    $json = file_get_contents("php://input");
+
+    $editarCliente = json_decode($json);
+    $clienteModel = $this->model("Cliente");
+    $clienteModel = $clienteModel->buscarPorId($id);
+
+    if(!$clienteModel){
+      http_response_code(404);
+      $erro = ["erro" => "Cliente não encontrado"];
+      echo json_encode($erro);
+      exit;
+    }
+
+    $clienteModel->nome = $editarCliente->nome;
+    $clienteModel->placa = $editarCliente->placa;
+
+    if($clienteModel->atualizar()){
+      http_response_code(204);  
+    }else{
+      http_response_code(500);
+      $erro = ["erro" => "Problemas ao editar o cliente"];
+      echo json_encode($erro, JSON_UNESCAPED_UNICODE);
+    }
   }
 }

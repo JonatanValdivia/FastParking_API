@@ -25,19 +25,15 @@ class Cliente{
     $sql = "SELECT * from tblCliente where id = ?;";
     $stmt = Model::conexaoDB()->prepare($sql);
     $stmt->bindValue(1, $id);
-    if($stmt->execute()){
+    $stmt->execute();
+    if($stmt->rowCount()>0){
       $cliente = $stmt->fetch(PDO::FETCH_OBJ);
-
-      if(!$cliente){
-        return false;
-      }
-
       $this->id = $cliente->id;
       $this->nome = $cliente->nome;
       $this->placa = $cliente->placa;
       $this->dataHoraEstacionado = $cliente->dataHoraEstacionado;
 
-      return $cliente;
+      return $this;
     }else{
       return false;
     }
@@ -54,6 +50,17 @@ class Cliente{
     }else{
       return false;
     }
+  }
+
+  public function atualizar(){
+    $sql = "UPDATE tblCliente SET nome = ?, placa = ? WHERE id = ?";
+
+    $stmt = Model::conexaoDB()->prepare($sql);
+    $stmt->bindValue(1, $this->nome);
+    $stmt->bindValue(2, $this->placa);
+    $stmt->bindValue(3, $this->id);
+
+    return $stmt->execute();
   }
 
 }
