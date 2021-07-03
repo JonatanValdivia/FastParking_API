@@ -9,8 +9,12 @@ class Cliente{
   public $dataHoraEstacionado;
 
   public function listarTodos(){
-    $sql = " SELECT id, nome, placa, date_format(dataHoraEstacionado, '%d/%m/%Y')as dataEstacionado,
-    time_format(dataHoraEstacionado, '%H:%i') as hora from tblCliente;";
+    $sql = "SELECT tblcliente.id, 
+    nome, placa, 
+    date_format(dataHoraEstacionado, '%d/%m/%Y')as dataEstacionado,
+    time_format(dataHoraEstacionado, '%H:%i') as hora,
+    tblpreco.primeiraHora, tblpreco.segundaHora from tblcliente inner join tblpreco on
+    (tblpreco.id = tblcliente.idPreco);";
     $stmt = Model::conexaoDB()->prepare($sql);
     $stmt->execute();
     if($stmt->rowCount()>0){

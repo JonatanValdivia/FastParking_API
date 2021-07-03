@@ -9,7 +9,7 @@ class Clientes extends Controller{
 
     $dados = $cadastroModel->listarTodos();
 
-    echo "<pre>" . json_encode($dados, JSON_UNESCAPED_UNICODE) . "</pre>";
+    echo json_encode($dados, JSON_UNESCAPED_UNICODE);
   }
 
   public function find($id){
