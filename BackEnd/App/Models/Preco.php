@@ -19,4 +19,20 @@ class Preco{
     }
   }
 
+  public function inserir(){
+    $sql = " INSERT into tblPreco (primeiraHora, segundaHora) values (?, ?); ";
+    $stmt = Model::conexaoDB()->prepare($sql);
+    $stmt->bindValue(1, $this->primeiraHora);
+    $stmt->bindValue(2, $this->segundaHora);
+    
+    if($stmt->execute()){
+      $this->id = Model::conexaoDB()->lastInsertId();
+      return $this;
+    }else{
+      return false;
+    }
+
+
+  }
+
 }
