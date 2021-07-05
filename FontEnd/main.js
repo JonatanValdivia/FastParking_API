@@ -28,6 +28,25 @@ const createClient = async(newClient) =>{
   await fetch(url, options);
 }
 
+const deleteClient = async(idClient) =>{
+  const url = `http://api.fastparking.com.br/clientes/${idClient}`;
+  const options = {
+    method: 'DELETE',
+    body: JSON.stringify(idClient)
+  }
+  await fetch(url, options);
+  updateTable();
+}
+
+const acoesBotoes = async(click) =>{
+  const botao = click.target;
+  if(botao.type == 'button' && botao.innerHTML == "Saída"){
+    const id = click.path[2].cells[0].firstChild.data;
+    await deleteClient(id);
+    updateTable();
+  }
+}
+
 function animacoes(){
   const sessaoPrecos = $('.sessaoPrecos');
   sessaoPrecos.style.animation = 'go-back 1s';
@@ -170,7 +189,7 @@ const adicionarCliente = async() => {
 
 $('#buttonPreco').addEventListener('click', criarTabelaPrecos)
 $('#buttonCancelar').addEventListener('click', () => {fecharTabelaPrecos(); limparInputs();})
-
+$('tbody').addEventListener('click', acoesBotoes);
 $('#salvarPrecos').addEventListener('click', () => {
   adicionarCliente();
 })
