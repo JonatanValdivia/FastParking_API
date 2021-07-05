@@ -189,6 +189,14 @@ const updateTable = async () => {
   clientes.forEach(criarNovaLinha)
 }
 
+const mascaraPlaca = (evento) => {
+  var cleave = new Cleave('#placa', {
+    delimiter: '-',
+    blocks: [3, 4],
+    uppercase: true
+});
+}
+
 const validarCampos = () => {
   if($('#placa').reportValidity() && $('#nome').reportValidity()){
     return true;
@@ -236,6 +244,7 @@ const adicionarCliente = async() => {
 $('#buttonAdicionar').addEventListener('click', adicionarCliente);
 $('#buttonPreco').addEventListener('click', criarTabelaPrecos)
 $('#buttonCancelar').addEventListener('click', () => {fecharTabelaPrecos(); limparInputs();})
+$('#placa').addEventListener('keyup', mascaraPlaca)
 $('tbody').addEventListener('click', acoesBotoes);
 $('#salvarPrecos').addEventListener('click', () => {
   adicionarCliente();
