@@ -36,11 +36,11 @@ class Clientes extends Controller{
 
     if($clienteModel){
       http_response_code(201);
-      echo json_encode($clienteModel);
+      return json_encode($clienteModel);
     }else{
       http_response_code(500);
       $erro = ["erro" => "Problemas ao inserir novo cliente"];
-      echo json_encode($erro);
+      return json_encode($erro);
     }
   }
 

@@ -2,7 +2,8 @@
 
 use App\Core\Model;
 
-class Cliente{
+class Cliente
+{
   public $id;
   public $nome;
   public $placa;
@@ -17,10 +18,10 @@ class Cliente{
     (tblpreco.id = tblcliente.idPreco);";
     $stmt = Model::conexaoDB()->prepare($sql);
     $stmt->execute();
-    if($stmt->rowCount()>0){
+    if ($stmt->rowCount() > 0) {
       $resultado = $stmt->fetchAll(\PDO::FETCH_OBJ);
       return $resultado;
-    }else{
+    } else {
       return [];
     }
   }
@@ -30,7 +31,7 @@ class Cliente{
     $stmt = Model::conexaoDB()->prepare($sql);
     $stmt->bindValue(1, $id);
     $stmt->execute();
-    if($stmt->rowCount()>0){
+    if ($stmt->rowCount() > 0) {
       $cliente = $stmt->fetch(PDO::FETCH_OBJ);
       $this->id = $cliente->id;
       $this->nome = $cliente->nome;
@@ -38,20 +39,38 @@ class Cliente{
       $this->dataHoraEstacionado = $cliente->dataHoraEstacionado;
 
       return $this;
-    }else{
+    } else {
       return false;
     }
   }
 
   public function inserir(){
+    $sql = "SELECT id from tblpreco order by 1 desc limit 1";
+    $stmt = Model::conexaoDB()->prepare($sql);
+    if ($stmt->execute()) {
+      $id = $stmt->fetch(PDO::FETCH_ASSOC);
+      $this->idPreco = $id['id'];
+      $sql = "INSERT into tblCliente (nome, placa, idPreco) values (?, ?, ?)";
+      $stmt = Model::conexaoDB()->prepare($sql);
+      $stmt->bindValue(1, $this->nome);
+      $stmt->bindValue(2, $this->placa);
+      $stmt->bindValue(3, $this->idPreco);
+      if ($stmt->execute()) {
+        $this->id = Model::conexaoDB()->lastInsertId();
+        return $this;
+      } else {
+        return false;
+      }
+    }
+
     $sql = "INSERT into tblCliente (nome, placa) values (?, ?)";
     $stmt = Model::conexaoDB()->prepare($sql);
     $stmt->bindValue(1, $this->nome);
     $stmt->bindValue(2, $this->placa);
-    if($stmt->execute()){
+    if ($stmt->execute()) {
       $this->id = Model::conexaoDB()->lastInsertId();
       return $this;
-    }else{
+    } else {
       return false;
     }
   }

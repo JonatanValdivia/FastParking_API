@@ -5,6 +5,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="./style.css">
+  <script src="https://cdn.jsdelivr.net/npm/cleave.js@1.6.0/dist/cleave.min.js" defer></script>
   <title>Document</title>
 </head>
 <body>
@@ -16,7 +17,7 @@
 
     <section id="form">
       <div class="inputs">
-        <label for="nome">Nome: <input type="text" id="nome" placeholder="Nome" required data-indice="" ></label>
+        <label for="nome">Nome: <input type="text" id="nome" placeholder="Nome" required data-idcontact="new" ></label>
         <label for="Placa">Placa: <input type="text" id="placa" pattern='([A-Z]){3}-\d{4}' placeholder="ABC-1234" maxlength="8" required ></label>
       </div>
       <div id="buttons">
@@ -31,10 +32,10 @@
         <hr>
         <div id="precosInput">
           <label for="PrimeiraHora">Primeira hora: 
-            <input type="text" id="primeiraHora" placeholder="Primeira hora">
+            <input type="number" min="0.1" id="primeiraHora" placeholder="Primeira hora">
           </label>
           <label for="DemaisHoras">Demais horas: 
-            <input type="text" id="demaisHoras" placeholder="Demais horas">
+            <input type="number" min="0.1" id="segundaHora" placeholder="Demais horas">
           </label>
         </div>
         <div id="precosButtons">
@@ -51,6 +52,7 @@
       <table class="table">
         <thead>
           <tr>  
+            <th>Id</th>
             <th>Nome</th>
             <th>Placa</th>
             <th>Data</th>

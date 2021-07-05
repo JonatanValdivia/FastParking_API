@@ -1,7 +1,6 @@
 <?php
 
 use App\Core\Controller;
-use App\Core\Model;
 
 class Precos extends Controller{
 
@@ -18,13 +17,9 @@ class Precos extends Controller{
     $precoModel->primeiraHora = $novoPreco->primeiraHora;
     $precoModel->segundaHora = $novoPreco->segundaHora;
     if($precoModel->inserir()){
-      http_response_code(201);
-      echo json_encode($precoModel);
+      return http_response_code(201);
     }else{
-      http_response_code(500);
-      $erro = ["erro" => "Problemas ao inserir novo preco"];
-      echo json_encode($erro);
+      return http_response_code(500);
     }
-
   }
 }

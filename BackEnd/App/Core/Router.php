@@ -26,7 +26,7 @@ class Router{
     }elseif(empty($url[1])){
 
     }else{//Se não existir esse controller passado na URL, faz-se:
-      //$this->controller = "cadastros";
+      $this->controller = "Clientes";
     }
     //Se o primeiro if for true, então damos um require_once, concatenado com o controller
     require_once "../App/Controllers/" . $this->controller . ".php";

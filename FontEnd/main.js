@@ -3,18 +3,12 @@
 const $ = (element) => document.querySelector(element);
 const $$ = (element) => document.querySelectorAll(element)
 
-const getAlunos = async ( url ) => fetch ( url ).then ( res => res.json() );
+const getCliente = async ( url ) => fetch ( url ).then ( res => res.json() );
 
-const  showAlunos = async () =>  {
-    const url = 'http://fastparking.com.br/clientes';
-    const alunos = await getAlunos(url);
-    console.log(alunos);
+const  showClients = async () =>  {
+    const url = 'http://api.fastparking.com.br/clientesPreco';
+    const cliente = await getCliente(url);
 };
-showAlunos();
-
-const verCliente = () =>{
-
-}
 
 function animacoes(){
   const sessaoPrecos = $('.sessaoPrecos');
@@ -60,6 +54,9 @@ const limparInputs = () =>{
   const inputs2 = Array.from($$('.precos input'));
   inputs1.forEach(input => input.value = '');
   inputs2.forEach(input => input.value = '');
+  document.getElementById('nome').dataset.idcontact = 'new';
+  document.getElementById('primeiraHora').disabled = false;
+  document.getElementById('segundaHora').disabled = false;
 }
 
 const data = () =>{
@@ -73,16 +70,6 @@ const data = () =>{
 
   return `${dia}/${mes}/${ano}`
   
-}
-
-const horaSaida = (primeiraHora, demaisHoras) =>{
-  const segundosUmaHora = 60 * 60;
-  let hora = segundosUmaHora / 3600;
-  let primeiraHoraCliente = primeiraHora * hora;
-  let horaSaida = new Date().getHours() + primeiraHoraCliente;
-  let minutos = new Date().getMinutes();
-  return horaSaida + ":" + minutos;
-
 }
 
 const horaEntrada = () =>{
@@ -103,7 +90,8 @@ const criarNovaLinha = (cliente, indice) => {
 
   const linhaClienteCadastrado = document.createElement('tr')
     const tbody = $('#cadastros #tbody')
-    linhaClienteCadastrado.innerHTML = `    
+    linhaClienteCadastrado.innerHTML = `
+      <td>${cliente.id}</td>    
       <td>${cliente.nome}</td>
       <td>${cliente.placa}</td>
       <td>${cliente.dataEstacionado}</td>
@@ -111,45 +99,11 @@ const criarNovaLinha = (cliente, indice) => {
       <td>
         <button type='button' id="telaComprovante" data-acao="comprovante-${indice}">Comp.</button>
         <button type='button' data-acao="editar-${indice}">Editar</button>
-        <button type='button' data-acao="sair-${indice}">Saída</button>
+        <button type='button' id="deletar">Saída</button>
       </td>
     `
     tbody.appendChild(linhaClienteCadastrado);
 }
-/*
-const saidaDoCliente = (indice) => {
-  const db = lerBancoDeDados();
-  const resposta = confirm("Deseja realmente sair? Esta ação irá deletar o registro!")
-  if(resposta){
-    db.splice(indice, 1); //Deletar o indice, e somente ele mesmo, sem mais algum outro cliente/linha/dados
-    setarBancoDeDados(db);
-    lerTabela();
-  }
-}*/
-/*
-const edicaoDoCliente = (indice) =>{
-  const db = lerBancoDeDados();
-    $('#nome').value = db[indice].nome;
-    $('#placa').value = db[indice].placa;
-    $('#nome').dataset.indice = indice;
-}
-
-const acoesBotoes = (evento) =>{
-  let botaoClicado = evento.target
-  if(botaoClicado.type === 'button'){
-    const acao = botaoClicado.dataset.acao.split('-')
-    //console.log(acao)
-    if(acao[0] === 'sair'){
-      saidaDoCliente(acao[1]);//Para a deleção dessa linha, precisamos necessariamente do id/indice, que é a posição um. A posição zero é o que deve ser feito, no caso a ação[0] == 'sair' ou editar
-    } else if(acao[0] === 'editar'){
-      edicaoDoCliente(acao[1]);
-    }else if(acao[0] === 'comprovante'){
-        const db = lerBancoDeDados();
-        db.forEach(cliente => criarComprovante(cliente))
-    }
-  }
-}
-*/
 
 const limparTela = () =>{
   const tbody = document.getElementById('tbody')
@@ -157,75 +111,26 @@ const limparTela = () =>{
     tbody.removeChild(tbody.lastChild);
   }
 }
-/*
-const editarCliente = (cliente, indice) =>{
-  const resposta = confirm("Deseja mesmo editar esse registro?");
-  if(resposta){
-    const db = lerBancoDeDados()
-    db[indice] = cliente
-    setarBancoDeDados(db);
-  }
-}
-*/
+
 const updateTable = async () => {
   limparTela();
-  const url = "http://fastparking.com.br/clientes";
-  const clientes = await getAlunos(url);
+  const url = "http://api.fastparking.com.br/clientesPreco";
+  const clientes = await getCliente(url);
   clientes.forEach(criarNovaLinha)
-  //db.forEach(cliente => criarComprovante(cliente))
-}
-/* 
-const exibirClientesNaTela = () =>{
-  const bancoDeDados = lerBancoDeDados();
-  bancoDeDados.forEach(updateTable)
-}
-*/
-
-const mascaraPlaca = (evento) => {
-  if($('#placa').value.length == 3){
-    $('#placa').value += "-";
-  } 
 }
 
 const validarCampos = () => {
   if($('#placa').reportValidity() && $('#nome').reportValidity()){
     return true;
   }
-}
+} 
 
 
-/*const adicionarCliente = () => {
-  if(validarCampos()){
-    const dadosCliente = {
-      nome: $('#nome').value,
-      placa: $('#placa').value,
-      data: data(),
-      hora: horaEntrada()
-    }
-    const index = $('#nome').dataset.indice;
-    if(index == ''){
-      const db = lerBancoDeDados();
-      db.push(dadosCliente);
-      localStorage.setItem('db', JSON.stringify(db))
-    }else{
-      editarCliente(dadosCliente, index);
-    }
-    exibirClientesNaTela();
-    limparInputs();
-  }
-} */
-
-//$('#buttonAdicionar').addEventListener('click', adicionarCliente);
 $('#buttonPreco').addEventListener('click', criarTabelaPrecos)
 $('#buttonCancelar').addEventListener('click', () => {fecharTabelaPrecos(); limparInputs();})
-$('#placa').addEventListener('keyup', mascaraPlaca)
-/*$('#placa').addEventListener('keyup', (maiusculas) =>{
-  const input = maiusculas.target;
-  input.value = input.value.toUpperCase();
-})*/
-//$('.table').addEventListener('click', acoesBotoes);
+
 $('#salvarPrecos').addEventListener('click', () => {
-  adicionarCliente()
+  adicionarCliente();
 })
 
 updateTable()
