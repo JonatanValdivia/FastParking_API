@@ -10,6 +10,7 @@ const  showClients = async () =>  {
     const cliente = await getCliente(url);
 };
 
+
 const createPreco = async(preco) =>{
   const url = 'http://api.fastparking.com.br/precos';
   const options = {
@@ -38,12 +39,34 @@ const deleteClient = async(idClient) =>{
   updateTable();
 }
 
+const updateClint = async(idClient) =>{
+  const url = `http://api.fastparking.com.br/clientes/${idClient.id}`;
+  const options = {
+    method: 'PUT',
+    body: JSON.stringify(idClient)
+  }
+  await fetch(url, options);
+}
+
+const editClient = async(idClient) =>{
+  const url = `http://api.fastparking.com.br/clientes/${idClient}`;
+  const client = await getCliente(url);
+  $('#nome').value = client.nome;
+  $('#placa').value = client.placa;
+  document.getElementById('nome').dataset.idcontact = client.id
+  document.getElementById('primeiraHora').disabled = true;
+    document.getElementById('segundaHora').disabled = true;
+}
+
 const acoesBotoes = async(click) =>{
   const botao = click.target;
   if(botao.type == 'button' && botao.innerHTML == "Saída"){
     const id = click.path[2].cells[0].firstChild.data;
     await deleteClient(id);
     updateTable();
+  }else if(botao.type == 'button' && botao.innerHTML == "Editar"){
+    const id = click.path[2].cells[0].firstChild.data;
+    await editClient(id);
   }
 }
 
@@ -109,6 +132,16 @@ const data = () =>{
   
 }
 
+const horaSaida = (primeiraHora, demaisHoras) =>{
+  const segundosUmaHora = 60 * 60;
+  let hora = segundosUmaHora / 3600;
+  let primeiraHoraCliente = primeiraHora * hora;
+  let horaSaida = new Date().getHours() + primeiraHoraCliente;
+  let minutos = new Date().getMinutes();
+  return horaSaida + ":" + minutos;
+
+}
+
 const horaEntrada = () =>{
   let hora = new Date().getHours();
   let minutos = new Date().getMinutes();
@@ -160,33 +193,47 @@ const validarCampos = () => {
   if($('#placa').reportValidity() && $('#nome').reportValidity()){
     return true;
   }
-} 
-
-const adicionarCliente = async() => {
-  if($('#primeiraHora').value == '' && $('#segundaHora').value == ''){
-    alert('Preencha os campos de preços');
-  }else{
-    if(validarCampos()){
-      const dadosPreco = {
-        "primeiraHora": $('#primeiraHora').value,
-        "segundaHora": $('#segundaHora').value
-      }
-
-      const dadosCliente = {
-        "nome": $('#nome').value,
-        "placa": $('#placa').value,
-        "primeiraHora": $('#primeiraHora').value,
-        "segundaHora": $('#segundaHora').value
-      }
-      await createPreco(dadosPreco);
-      await createClient(dadosCliente);
-      updateTable();
-      limparInputs();
-    }
-  }
 }
 
+const adicionarCliente = async() => {
+  const idContact = document.getElementById('nome').dataset.idcontact
+  if(idContact == 'new'){
+    if($('#primeiraHora').value == '' && $('#segundaHora').value == ''){
+      alert('Preencha os campos de preços');
+    }else{
+      if(validarCampos()){
+        const dadosPreco = {
+          "primeiraHora": $('#primeiraHora').value,
+          "segundaHora": $('#segundaHora').value
+        }
 
+        const dadosCliente = {
+          "nome": $('#nome').value,
+          "placa": $('#placa').value,
+          "primeiraHora": $('#primeiraHora').value,
+          "segundaHora": $('#segundaHora').value
+        }
+        await createPreco(dadosPreco);
+        await createClient(dadosCliente);
+        updateTable();
+        limparInputs();
+      }
+    }
+  }else{
+    const dadosClienteUp = {
+      "nome": $('#nome').value,
+      "placa": $('#placa').value
+    }
+    dadosClienteUp.id = idContact
+    console.log(dadosClienteUp)
+    await updateClint(dadosClienteUp);
+    
+    updateTable();
+    limparInputs();
+  }
+} 
+
+$('#buttonAdicionar').addEventListener('click', adicionarCliente);
 $('#buttonPreco').addEventListener('click', criarTabelaPrecos)
 $('#buttonCancelar').addEventListener('click', () => {fecharTabelaPrecos(); limparInputs();})
 $('tbody').addEventListener('click', acoesBotoes);
