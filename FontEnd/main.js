@@ -10,6 +10,24 @@ const  showClients = async () =>  {
     const cliente = await getCliente(url);
 };
 
+const createPreco = async(preco) =>{
+  const url = 'http://api.fastparking.com.br/precos';
+  const options = {
+    method: 'POST',
+    body: JSON.stringify(preco)
+  }
+  await fetch(url, options);
+}
+
+const createClient = async(newClient) =>{
+  const url = 'http://api.fastparking.com.br/clientes';
+  const options = {
+    method: 'POST',
+    body: JSON.stringify(newClient)
+  }
+  await fetch(url, options);
+}
+
 function animacoes(){
   const sessaoPrecos = $('.sessaoPrecos');
   sessaoPrecos.style.animation = 'go-back 1s';
@@ -124,6 +142,30 @@ const validarCampos = () => {
     return true;
   }
 } 
+
+const adicionarCliente = async() => {
+  if($('#primeiraHora').value == '' && $('#segundaHora').value == ''){
+    alert('Preencha os campos de preços');
+  }else{
+    if(validarCampos()){
+      const dadosPreco = {
+        "primeiraHora": $('#primeiraHora').value,
+        "segundaHora": $('#segundaHora').value
+      }
+
+      const dadosCliente = {
+        "nome": $('#nome').value,
+        "placa": $('#placa').value,
+        "primeiraHora": $('#primeiraHora').value,
+        "segundaHora": $('#segundaHora').value
+      }
+      await createPreco(dadosPreco);
+      await createClient(dadosCliente);
+      updateTable();
+      limparInputs();
+    }
+  }
+}
 
 
 $('#buttonPreco').addEventListener('click', criarTabelaPrecos)
