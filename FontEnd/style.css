@@ -57,17 +57,18 @@ input{
   font-size: 1.5rem;
   border: 2px solid black;
   border-radius: 5px;
-  padding: 3rem;
+  padding: 1rem;
   margin-top: 7rem;
 }
 
 #form input{
-  width: 80%;
+  width: 50%;
   font-size: 1.3rem;
   border-radius: 3px;
 }
 
 #form label{
+  margin-left: 4rem;
   margin-bottom: 2rem;
 }
 
@@ -166,9 +167,9 @@ footer{
 
 #precosInput{
   width: 100%;
+  margin-left: 2rem;
   display: flex;
   flex-direction: column;
-  text-align: center;
   padding: 1rem;
 }
 
@@ -226,11 +227,12 @@ footer{
   width: 100%;
   display: flex;
   flex-direction: column;
-  padding: 2rem 5rem;
 }
 
 #dados label{
+  margin-top: 1rem;
   margin-bottom: 1rem;
+  margin-left: 2.5rem;
 }
 
 #acaoImpressao{

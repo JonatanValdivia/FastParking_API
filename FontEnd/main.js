@@ -8,7 +8,9 @@ const getCliente = async ( url ) => fetch ( url ).then ( res => res.json() );
 const  showClients = async () =>  {
     const url = 'http://api.fastparking.com.br/clientesPreco';
     const cliente = await getCliente(url);
+    console.log(cliente);
 };
+showClients();
 
 
 const createPreco = async(preco) =>{
@@ -55,18 +57,39 @@ const editClient = async(idClient) =>{
   $('#placa').value = client.placa;
   document.getElementById('nome').dataset.idcontact = client.id
   document.getElementById('primeiraHora').disabled = true;
-    document.getElementById('segundaHora').disabled = true;
+  document.getElementById('segundaHora').disabled = true;
+}
+
+const criarComprovante = (cliente) =>{
+  const sessaoPrecos = $('#dados');
+  sessaoPrecos.innerHTML = `
+    <h3>Comprovante de entrada</h3>
+    <hr>
+    <label for="nome">Nome: ${cliente.nome}</label>
+    <label for="placa">Placa: ${cliente.placa}</label>
+    <label for="data">Data: ${cliente.dataEstacionado}</label>
+    <label for="hora">Hora: ${cliente.hora}</label>
+    <div id="acaoImpressao">
+      <button>Imprimir</button>
+      <button>Cancelar</button>
+    </div>
+  `;
+  //sessaoPrecos.appendChild(div);
 }
 
 const acoesBotoes = async(click) =>{
   const botao = click.target;
+  const id = click.path[2].cells[0].firstChild.data;
   if(botao.type == 'button' && botao.innerHTML == "Saída"){
-    const id = click.path[2].cells[0].firstChild.data;
-    await deleteClient(id);
-    updateTable();
+    if(confirm("Deseja mesmo sair?")){  
+      await deleteClient(id);
+    }
   }else if(botao.type == 'button' && botao.innerHTML == "Editar"){
-    const id = click.path[2].cells[0].firstChild.data;
     await editClient(id);
+  }else if(botao.type == 'button' && botao.innerHTML == "Comp."){
+    const url = `http://api.fastparking.com.br/clientes/${id}`;
+    const client = await getCliente(url);
+    criarComprovante(client);
   }
 }
 
@@ -84,31 +107,6 @@ const fecharTabelaPrecos = () =>{
   const sessaoTabelaPrecos = $('.precos').classList.add('none') 
 }
 
-const lerBancoDeDados = () => JSON.parse(localStorage.getItem('db')) ?? [];
-
-const setarBancoDeDados = (db) => localStorage.setItem('db', JSON.stringify(db))
-
-const criarComprovante = (cliente) =>{
-  const div = document.createElement('div');
-  const sessaoPrecos = $('#sessaoComprovante');
-  div.innerHTML = `
-    <h3>Comprovante</h3>
-    <hr>
-    <div id="dados">
-      <label for="nome">Nome: ${cliente.nome}</label>
-      <label for="placa">Placa: ${cliente.placa}</label>
-      <label for="data">Data: ${cliente.data}</label>
-      <label for="hora">Hora: ${cliente.hora}</label>
-    </div>
-    <div id="acaoImpressao">
-      <button>Imprimir</button>
-      <button>Cancelar</button>
-    </div>
-  `;
-
-  sessaoPrecos.appendChild(div);
-}
-
 const limparInputs = () =>{
   const inputs1 = Array.from($$('.inputs input'));
   const inputs2 = Array.from($$('.precos input'));
@@ -117,43 +115,6 @@ const limparInputs = () =>{
   document.getElementById('nome').dataset.idcontact = 'new';
   document.getElementById('primeiraHora').disabled = false;
   document.getElementById('segundaHora').disabled = false;
-}
-
-const data = () =>{
-  let data = new Date();
-  let dia = data.getDate();
-  let mes = data.getMonth()+1;
-  let ano = data.getFullYear();
-
-  if(dia.toString().length == 1) dia = '0'+dia;
-  if(mes.toString().length == 1) mes = '0'+mes;
-
-  return `${dia}/${mes}/${ano}`
-  
-}
-
-const horaSaida = (primeiraHora, demaisHoras) =>{
-  const segundosUmaHora = 60 * 60;
-  let hora = segundosUmaHora / 3600;
-  let primeiraHoraCliente = primeiraHora * hora;
-  let horaSaida = new Date().getHours() + primeiraHoraCliente;
-  let minutos = new Date().getMinutes();
-  return horaSaida + ":" + minutos;
-
-}
-
-const horaEntrada = () =>{
-  let hora = new Date().getHours();
-  let minutos = new Date().getMinutes();
-  return hora + ":" + minutos;
-}
-
-const formPreco = () =>{
-  const horaCliente ={
-    primeiraHora: $('#primeiraHora').value,
-    demaisHoras: $('#demaisHoras').value
-  }
-  return horaSaida(horaCliente.primeiraHora, horaCliente.demaisHoras)  
 } 
 
 const criarNovaLinha = (cliente, indice) => {
@@ -169,7 +130,7 @@ const criarNovaLinha = (cliente, indice) => {
       <td>
         <button type='button' id="telaComprovante" data-acao="comprovante-${indice}">Comp.</button>
         <button type='button' data-acao="editar-${indice}">Editar</button>
-        <button type='button' id="deletar">Saída</button>
+        <button type='button'>Saída</button>
       </td>
     `
     tbody.appendChild(linhaClienteCadastrado);
