@@ -104,7 +104,7 @@ input{
   background-color: rgb(214, 214, 206);
   width: 80%;
   margin-bottom: 7rem;
-  margin-top: 14rem;
+  margin-top: 7rem;
 }
 
 .table{
@@ -157,8 +157,17 @@ footer{
   100% {transform: translateX(0);}
 }
 
+@keyframes back-go{
+  0% {transform: translateX(-1000px);}
+  1000% {transform: translateX(0);}
+}
+
 .none{
   display: none;
+}
+
+.opacity{
+  opacity: 0;
 }
 
 .precos > h3{
@@ -199,7 +208,8 @@ footer{
   color: white;
 }
 
-#sessaoComprovante{
+.sessaoComprovante{
+  transition: 2s;
   margin-top: 5rem;
   width: 100%;
   display: flex;
@@ -208,7 +218,7 @@ footer{
   flex-direction: column;
 }
 
-#sessaoComprovante > div{
+.sessaoComprovante #dados{
   width: 40vw;
   background-color: var(--lightColor);
   color: var(--fontColor);
@@ -219,12 +229,12 @@ footer{
   margin-top: 2%;
 }
 
-#sessaoComprovante div > h3{
+.sessaoComprovante div > h3{
   padding: 1rem;
 }
 
 #dados{
-  width: 100%;
+  width: 40%;
   display: flex;
   flex-direction: column;
 }
@@ -286,11 +296,11 @@ footer{
   }
 
 
-  #sessaoComprovante{
+  .sessaoComprovante{
     width: 80%;
   }
   
-  #sessaoComprovante > div{
+  .sessaoComprovante > div{
     width: 100%;
   }
   

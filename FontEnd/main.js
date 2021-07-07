@@ -8,10 +8,7 @@ const getCliente = async ( url ) => fetch ( url ).then ( res => res.json() );
 const  showClients = async () =>  {
     const url = 'http://api.fastparking.com.br/clientesPreco';
     const cliente = await getCliente(url);
-    console.log(cliente);
 };
-showClients();
-
 
 const createPreco = async(preco) =>{
   const url = 'http://api.fastparking.com.br/precos';
@@ -60,7 +57,15 @@ const editClient = async(idClient) =>{
   document.getElementById('segundaHora').disabled = true;
 }
 
+
+function animacaoTblComprovante(){
+  const sessaoPrecos = $('.sessaoComprovante');
+  sessaoPrecos.style.animation = 'back-go 1s';
+}
+
 const criarComprovante = (cliente) =>{
+  animacaoTblComprovante();
+  const sessaoComprovante = $('.sessaoComprovante').classList.remove('opacity'); 
   const sessaoPrecos = $('#dados');
   sessaoPrecos.innerHTML = `
     <h3>Comprovante de entrada</h3>
@@ -70,11 +75,28 @@ const criarComprovante = (cliente) =>{
     <label for="data">Data: ${cliente.dataEstacionado}</label>
     <label for="hora">Hora: ${cliente.hora}</label>
     <div id="acaoImpressao">
-      <button>Imprimir</button>
-      <button>Cancelar</button>
+      <button type='button'>Imprimir</button>
+      <button id="buttonCancelar">Cancelar</button>
     </div>
   `;
-  //sessaoPrecos.appendChild(div);
+}
+
+const fecharComprovanteEntrada = () =>{
+  const comprovante = $('.comprovante').classList.add('none')
+}
+
+const abrirComprovanteEntrada = () =>{
+  const comprovante = $('.comprovante').classList.remove('none')
+}
+
+const acaoBotaoImprimir = (event) =>{
+  const botao = event.target.type
+  if(botao == 'button'){
+    window.print();
+  }else if(botao == 'submit'){
+    const sessaoComprovante = $('.sessaoComprovante').classList.add('opacity'); 
+    fecharComprovanteEntrada();
+  }
 }
 
 const acoesBotoes = async(click) =>{
@@ -85,11 +107,14 @@ const acoesBotoes = async(click) =>{
       await deleteClient(id);
     }
   }else if(botao.type == 'button' && botao.innerHTML == "Editar"){
+    fecharTabelaPrecos();
+    fecharComprovanteEntrada();
     await editClient(id);
   }else if(botao.type == 'button' && botao.innerHTML == "Comp."){
     const url = `http://api.fastparking.com.br/clientes/${id}`;
     const client = await getCliente(url);
     criarComprovante(client);
+    abrirComprovanteEntrada();
   }
 }
 
@@ -118,7 +143,6 @@ const limparInputs = () =>{
 } 
 
 const criarNovaLinha = (cliente, indice) => {
-
   const linhaClienteCadastrado = document.createElement('tr')
     const tbody = $('#cadastros #tbody')
     linhaClienteCadastrado.innerHTML = `
@@ -209,6 +233,8 @@ $('#placa').addEventListener('keyup', mascaraPlaca)
 $('tbody').addEventListener('click', acoesBotoes);
 $('#salvarPrecos').addEventListener('click', () => {
   adicionarCliente();
+  fecharTabelaPrecos();
 })
+$('#dados').addEventListener('click', acaoBotaoImprimir)
 
 updateTable()
