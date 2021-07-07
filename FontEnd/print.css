@@ -25,6 +25,11 @@
     color: rgb(39, 38, 38);
   }
 
+  .sessaoComprovanteSaida{
+    min-width: 70vw;
+    color: rgb(39, 38, 38);
+  }
+
   #acaoImpressao{
     display: none;
   }

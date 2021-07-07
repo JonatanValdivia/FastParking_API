@@ -9,6 +9,8 @@ class Cliente
   public $placa;
   public $dataEstacionado;
   public $hora;
+  public $primeiraHora;
+  public $segundaHora;
 
   public function listarTodos(){
     $sql = "SELECT tblcliente.id, 
@@ -32,7 +34,7 @@ class Cliente
     nome, placa, 
     date_format(dataHoraEstacionado, '%d/%m/%Y')as dataEstacionado,
     time_format(dataHoraEstacionado, '%H:%i') as hora,
-    tblpreco.primeiraHora, tblpreco.segundaHora from tblcliente inner join tblpreco on
+    tblpreco.primeiraHora as primeiraHora, tblpreco.segundaHora as segundaHora from tblcliente inner join tblpreco on
     (tblpreco.id = tblcliente.idPreco) where tblcliente.id = ?;";
     $stmt = Model::conexaoDB()->prepare($sql);
     $stmt->bindValue(1, $id);
@@ -44,7 +46,8 @@ class Cliente
       $this->placa = $cliente->placa;
       $this->dataEstacionado = $cliente->dataEstacionado;
       $this->hora = $cliente->hora;
-
+      $this->primeiraHora = $cliente->primeiraHora;
+      $this->segundaHora = $cliente->segundaHora;
       return $this;
     } else {
       return false;

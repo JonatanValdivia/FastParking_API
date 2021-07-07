@@ -5,11 +5,6 @@ const $$ = (element) => document.querySelectorAll(element)
 
 const getCliente = async ( url ) => fetch ( url ).then ( res => res.json() );
 
-const  showClients = async () =>  {
-    const url = 'http://api.fastparking.com.br/clientesPreco';
-    const cliente = await getCliente(url);
-};
-
 const createPreco = async(preco) =>{
   const url = 'http://api.fastparking.com.br/precos';
   const options = {
@@ -57,11 +52,14 @@ const editClient = async(idClient) =>{
   document.getElementById('segundaHora').disabled = true;
 }
 
-
 function animacaoTblComprovante(){
   const sessaoPrecos = $('.sessaoComprovante');
   sessaoPrecos.style.animation = 'back-go 1s';
 }
+
+const openModalSaida = () => $('.comprovanteSaida').classList.add('active')
+
+const closeModalSaida = () => $('.comprovanteSaida').classList.remove('active')
 
 const criarComprovante = (cliente) =>{
   animacaoTblComprovante();
@@ -79,6 +77,49 @@ const criarComprovante = (cliente) =>{
       <button id="buttonCancelar">Cancelar</button>
     </div>
   `;
+}
+
+const data = () =>{
+  let data = new Date();
+  let dia = data.getDate();
+  let mes = data.getMonth()+1;
+  let ano = data.getFullYear();
+
+  if(dia.toString().length == 1) dia = '0'+dia;
+  if(mes.toString().length == 1) mes = '0'+mes;
+
+  return `${dia}/${mes}/${ano}`
+  
+}
+
+const horaSaida = () =>{
+  let hora = new Date().getHours();
+  let minutos = new Date().getMinutes();
+  return hora + ":" + minutos;
+}
+
+const criarComprovanteSaida = (cliente) =>{
+  const sessaoComprovanteSaida = $('.sessaoComprovanteSaida').innerHTML = ` 
+    <h3>Comprovante de saída</h3>
+    <hr>
+    <label for="nome">Nome: ${cliente.nome}</label>
+    <label for="placa">Placa: ${cliente.placa}</label>
+    <label for="data">Data da saída: ${data()}</label>
+    <label for="hora">Hora saída: ${horaSaida()}</label>
+    <label>Valor a pagar: R$${cliente.primeiraHora} </label>
+    <div id="acaoImpressao">
+      <button type='button'>Imprimir</button>
+      <button id="buttonCancelar">Cancelar</button>
+    </div>`
+}
+
+const acoesBotoesModalSaida = (event) =>{
+  const botao = event.target.type;
+  if(botao == 'button'){
+    window.print();
+  }else if(botao == 'submit'){
+    closeModalSaida();
+  }
 }
 
 const fecharComprovanteEntrada = () =>{
@@ -102,11 +143,8 @@ const acaoBotaoImprimir = (event) =>{
 const acoesBotoes = async(click) =>{
   const botao = click.target;
   const id = click.path[2].cells[0].firstChild.data;
-  if(botao.type == 'button' && botao.innerHTML == "Saída"){
-    if(confirm("Deseja mesmo sair?")){  
-      await deleteClient(id);
-    }
-  }else if(botao.type == 'button' && botao.innerHTML == "Editar"){
+  
+  if(botao.type == 'button' && botao.innerHTML == "Editar"){
     fecharTabelaPrecos();
     fecharComprovanteEntrada();
     await editClient(id);
@@ -115,6 +153,15 @@ const acoesBotoes = async(click) =>{
     const client = await getCliente(url);
     criarComprovante(client);
     abrirComprovanteEntrada();
+  }else if(botao.type == 'submit'){
+    const url = `http://api.fastparking.com.br/clientes/${id}`;
+    const client = await getCliente(url);
+    if(confirm("Deseja mesmo sair?")){  
+      openModalSaida();
+      criarComprovanteSaida(client);
+      await deleteClient(id);
+    }
+    
   }
 }
 
@@ -154,7 +201,7 @@ const criarNovaLinha = (cliente, indice) => {
       <td>
         <button type='button' id="telaComprovante" data-acao="comprovante-${indice}">Comp.</button>
         <button type='button' data-acao="editar-${indice}">Editar</button>
-        <button type='button'>Saída</button>
+        <button>Saída</button>
       </td>
     `
     tbody.appendChild(linhaClienteCadastrado);
@@ -236,5 +283,5 @@ $('#salvarPrecos').addEventListener('click', () => {
   fecharTabelaPrecos();
 })
 $('#dados').addEventListener('click', acaoBotaoImprimir)
-
+$('.sessaoComprovanteSaida').addEventListener('click', acoesBotoesModalSaida)
 updateTable()
