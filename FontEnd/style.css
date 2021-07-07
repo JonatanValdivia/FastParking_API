@@ -79,6 +79,10 @@ input{
   align-items: center;
 }
 
+.inputs label:first-child{
+  margin-top: 1.5rem
+}
+
 .inputs label{
   width: 100%;
 }
@@ -295,15 +299,10 @@ footer{
     margin-left: 3%;
   }
 
+  .sessaoComprovante #dados{
+    width: 80vw;
+  }
 
-  .sessaoComprovante{
-    width: 80%;
-  }
-  
-  .sessaoComprovante > div{
-    width: 100%;
-  }
-  
 }
 
 @media (min-width: 400px) and (max-width: 768px){
@@ -337,6 +336,10 @@ footer{
 
   #tbody td{
     padding-bottom: 4%;
+  }
+  
+  .sessaoComprovante #dados{
+    width: 80vw;
   }
 
 }
