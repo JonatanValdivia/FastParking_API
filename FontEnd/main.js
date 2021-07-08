@@ -159,9 +159,9 @@ const acoesBotoes = async(click) =>{
     if(confirm("Deseja mesmo sair?")){  
       openModalSaida();
       criarComprovanteSaida(client);
+      fecharComprovanteEntrada();
       await deleteClient(id);
-    }
-    
+    } 
   }
 }
 

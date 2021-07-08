@@ -351,6 +351,16 @@ footer{
   .sessaoComprovante #dados{
     width: 80vw;
   }
+  
+  .sessaoComprovanteSaida{
+    width: 80vw;
+    border-radius: 5px;
+    height: auto;
+    padding-bottom: 1%;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+  }
 
 }
 
@@ -389,6 +399,16 @@ footer{
   
   .sessaoComprovante #dados{
     width: 80vw;
+  }
+
+  .sessaoComprovanteSaida{
+    width: 80vw;
+    border-radius: 5px;
+    height: auto;
+    padding-bottom: 1%;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
   }
 
 }
