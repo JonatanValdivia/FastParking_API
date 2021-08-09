@@ -6,7 +6,7 @@ class Model{
   private static $conexao;
 
   public static function conexaoDB(){
-    $host = $_ENV["database_name"];
+    $host = $_ENV["database_host"];
     $user = $_ENV["database_user"];
     $pass = $_ENV["database_pass"];
     
