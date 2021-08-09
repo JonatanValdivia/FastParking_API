@@ -13,7 +13,7 @@ class Model{
       
     
     if(!isset(self::$conexao)){
-      self::$conexao = new \PDO("mysql:host=$host;post=3306;dbname=FastParking;", $user, $pass); 
+      self::$conexao = new \PDO("mysql:host=$host;post=3306;dbname=fastparking;", $user, $pass); 
     }
 
     return self::$conexao;
